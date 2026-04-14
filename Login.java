@@ -6,7 +6,11 @@
     Due Date : 14 April 2026
     Lecturer's Name : Mr. Rikhotso Simon
     */
-
+/*References: 
+  Oracle. (n.d.) Lesson: Regular Expressions. Oracle Java Tutorials.
+  Oracle. (n.d.) Pattern (Java SE 21). Oracle Documentation.
+  JUnit Team. (n.d.) JUnit 5 User Guide and Assertions. JUnit.
+     */
 
 import java.util.regex.Pattern;
 
