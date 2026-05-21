@@ -1,114 +1,141 @@
-/*Name and Surname : Pakiso Setunku
-    Student number : ST10482097
-    Module name : Programming
-    Module code : PROG5121
-    Assessment type : POE Part 1 
-    Due Date : 14 April 2026
-    Lecturer's Name : Mr. Rikhotso Simon
-    */
-/*References: 
-  Oracle. (n.d.) Lesson: Regular Expressions. Oracle Java Tutorials.
-  Oracle. (n.d.) Pattern (Java SE 21). Oracle Documentation.
-  JUnit Team. (n.d.) JUnit 5 User Guide and Assertions. JUnit.
-     */
+package com.mycompany.loginapplication;
 
-import java.util.regex.Pattern;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 
+/**
+ *
+ * @author lab_services_student
+ */
+
+// Login class
 public class Login {
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private String cellPhoneNumber;
-    private boolean loggedIn;
 
-    public Login(String firstName, String lastName, String username, String password, String cellPhoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.password = password;
-        this.cellPhoneNumber = cellPhoneNumber;
-        this.loggedIn = false;
+    // Variables to store user details
+    String usernameStored;
+    String passwordStored;
+    String firstName;
+    String lastName;
+    String phoneNumber;
+
+    // Method to save first name
+    public void setFirstName(String name) {
+        firstName = name;
     }
 
-    public boolean checkUserName() {
-        return username != null && username.length() <= 5 && username.contains("_");
+    // Method to save last name
+    public void setLastName(String surname) {
+        lastName = surname;
     }
 
-    public String checkUserNameMessage() {
-        if (checkUserName()) {
-            return "Username successfully captured.";
+    // Method to save phone number
+    public void setPhoneNumber(String number) {
+        phoneNumber = number;
+    }
+
+    // Check if username is correct
+    public boolean checkUsername(String username) {
+
+        // Username must contain "_" and be 5 characters or less
+        if (username.contains("_") && username.length() <= 5) {
+            return true;
+        } else {
+            return false;
         }
-        return "Username is not correctly formatted; please ensure that your username contains an underscore and is no more than five characters in length.";
     }
 
-    public boolean checkPasswordComplexity() {
-        if (password == null || password.length() < 8) {
+    // Check if password is correct
+    public boolean checkPassword(String password) {
+
+        boolean hasCapital = false;
+        boolean hasNumber = false;
+        boolean hasSpecial = false;
+
+        // Password must be at least 8 characters
+        if (password.length() < 8) {
             return false;
         }
 
-        boolean hasCapitalLetter = Pattern.compile(".*[A-Z].*").matcher(password).matches();
-        boolean hasNumber = Pattern.compile(".*\\d.*").matcher(password).matches();
-        boolean hasSpecialCharacter = Pattern.compile(".*[^A-Za-z0-9].*").matcher(password).matches();
+        // Loop through password characters
+        for (int i = 0; i < password.length(); i++) {
 
-        return hasCapitalLetter && hasNumber && hasSpecialCharacter;
-    }
+            char ch = password.charAt(i);
 
-    public String checkPasswordComplexityMessage() {
-        if (checkPasswordComplexity()) {
-            return "Password successfully captured.";
-        }
-        return "Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter, a number, and a special character.";
-    }
+            // Check for uppercase letter
+            if (Character.isUpperCase(ch)) {
+                hasCapital = true;
+            }
 
-    public boolean checkCellPhoneNumber() {
-        return cellPhoneNumber != null && cellPhoneNumber.matches("^\\+27\\d{9}$");
-    }
+            // Check for number
+            if (Character.isDigit(ch)) {
+                hasNumber = true;
+            }
 
-    public String checkCellPhoneNumberMessage() {
-        if (checkCellPhoneNumber()) {
-            return "Cell phone number successfully added.";
-        }
-        return "Cell phone number incorrectly formatted or does not contain international code; please correct the number and try again.";
-    }
-
-    public String registerUser() {
-        if (!checkUserName()) {
-            return checkUserNameMessage();
+            // Check for special character
+            if (!Character.isLetterOrDigit(ch)) {
+                hasSpecial = true;
+            }
         }
 
-        if (!checkPasswordComplexity()) {
-            return checkPasswordComplexityMessage();
+        // Password is valid only if all are true
+        if (hasCapital && hasNumber && hasSpecial) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Check phone number
+    public boolean checkPhoneNumber(String number) {
+
+        // Must start with +27
+        if (number.startsWith("+27") && number.length() >= 12) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Register user
+    public String registerUser(String username, String password) {
+
+        // Check username
+        if (checkUsername(username) == false) {
+            return "Username is incorrect. It must contain '_' and be 5 characters or less.";
         }
 
-        if (!checkCellPhoneNumber()) {
-            return checkCellPhoneNumberMessage();
+        // Check password
+        if (checkPassword(password) == false) {
+            return "Password is incorrect. It must have 8 characters, a capital letter, a number and a special character.";
         }
 
-        return "Username successfully captured.\n"
-                + "Password successfully captured.\n"
-                + "Cell phone number successfully added.";
+        // Save details
+        usernameStored = username;
+        passwordStored = password;
+
+        return "User registered successfully.";
     }
 
-    public boolean loginUser(String enteredUsername, String enteredPassword) {
-        loggedIn = username != null && password != null
-                && username.equals(enteredUsername)
-                && password.equals(enteredPassword);
-        return loggedIn;
-    }
+    // Login user
+    public boolean loginUser(String username, String password) {
 
-    public String returnLoginStatus() {
-        if (loggedIn) {
-            return "Welcome " + firstName + ", " + lastName + " it is great to see you.";
+        // Check if entered details match saved details
+        if (username.equals(usernameStored) && password.equals(passwordStored)) {
+            return true;
+        } else {
+            return false;
         }
-        return "Username or password incorrect, please try again.";
     }
 
-    public String getUsername() {
-        return username;
-    }
+    // Return login message
+    public String returnLoginStatus(boolean loggedIn) {
 
-    public String getPassword() {
-        return password;
+        if (loggedIn == true) {
+            return "Welcome " + firstName + " " + lastName + ". Good to see you again.";
+        } else {
+            return "Username or password is incorrect.";
+        }
     }
 }
