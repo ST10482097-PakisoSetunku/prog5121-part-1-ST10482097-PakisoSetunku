@@ -1,43 +1,199 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.loginapplication;
+
+/**
+ *
+ * @author lab_services_student
+ */
+
+/* 
+Name and Surname : Pakiso Setunku
+Student Number : ST10482097
+Module : Programming
+Assessment : POE Part 2
+*/
 import java.util.Scanner;
 
 public class LoginApp {
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Read the full task carefully before starting.");
-        System.out.println("--- Registration ---");
+        Scanner input = new Scanner(System.in);
 
+        // Create Login object
+        Login user = new Login();
+
+        //  REGISTRATION 
+        System.out.println("===== USER REGISTRATION =====");
+
+        // First name
         System.out.print("Enter first name: ");
-        String firstName = scanner.nextLine();
+        String firstName = input.nextLine();
+        user.setFirstName(firstName);
 
+        // Last name
         System.out.print("Enter last name: ");
-        String lastName = scanner.nextLine();
+        String lastName = input.nextLine();
+        user.setLastName(lastName);
 
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
+        // Phone number
+        System.out.print("Enter phone number: ");
+        String phoneNumber = input.nextLine();
 
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
+        if (user.checkPhoneNumber(phoneNumber)) {
 
-        System.out.print("Enter cell phone number: ");
-        String cellPhoneNumber = scanner.nextLine();
+            user.setPhoneNumber(phoneNumber);
+            System.out.println("Phone number captured successfully.");
 
-        Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
+        } else {
 
-        System.out.println(login.registerUser());
+            System.out.println("Phone number is incorrect.");
+        }
 
-        System.out.println();
-        System.out.println("--- Login ---");
+        // Username
+        System.out.print("Create username: ");
+        String username = input.nextLine();
 
-        System.out.print("Enter username to log in: ");
-        String loginUsername = scanner.nextLine();
+        // Password
+        System.out.print("Create password: ");
+        String password = input.nextLine();
 
-        System.out.print("Enter password to log in: ");
-        String loginPassword = scanner.nextLine();
+        // Register user
+        String registerResult = user.registerUser(username, password);
 
-        login.loginUser(loginUsername, loginPassword);
-        System.out.println(login.returnLoginStatus());
+        System.out.println(registerResult);
 
-        scanner.close();
+        // LOGIN 
+        if (registerResult.contains("successfully")) {
+
+            System.out.println("\n===== LOGIN =====");
+
+            System.out.print("Enter username: ");
+            String loginUsername = input.nextLine();
+
+            System.out.print("Enter password: ");
+            String loginPassword = input.nextLine();
+
+            // Check login
+            boolean loggedIn = user.loginUser(loginUsername, loginPassword);
+
+            // Display login message
+            System.out.println(user.returnLoginStatus(loggedIn));
+
+            // QUICKCHAT
+            if (loggedIn == true) {
+
+                System.out.println("\nWelcome to QuickChat.");
+
+                boolean running = true;
+
+                int messageCounter = 0;
+
+                // Menu loop
+                while (running == true) {
+
+                    System.out.println("\n===== MENU =====");
+                    System.out.println("1. Send Messages");
+                    System.out.println("2. Show Sent Messages");
+                    System.out.println("3. Quit");
+
+                    System.out.print("Choose option: ");
+
+                    int option = input.nextInt();
+                    input.nextLine();
+
+                    // SEND MESSAGES
+                    if (option == 1) {
+
+                        System.out.print("How many messages do you want to send? ");
+                        int amount = input.nextInt();
+                        input.nextLine();
+
+                        // Loop through messages
+                        for (int i = 0; i < amount; i++) {
+
+                            messageCounter++;
+
+                            System.out.println("\n===== MESSAGE " + messageCounter + " =====");
+
+                            // Recipient
+                            System.out.print("Enter recipient number: ");
+                            String recipient = input.nextLine();
+
+                            // Message text
+                            System.out.print("Enter message: ");
+                            String text = input.nextLine();
+
+                            // Create message object
+                            Message message = new Message(messageCounter, recipient, text);
+
+                            // Validate recipient
+                            System.out.println(message.checkRecipientCell());
+
+                            // Validate message length
+                            if (message.checkMessageLength()) {
+
+                                System.out.println("Message captured successfully.");
+
+                            } else {
+
+                                System.out.println("Message exceeds 250 characters.");
+                            }
+
+                            // Action menu
+                            System.out.println("\n1 - Send Message");
+                            System.out.println("2 - Store Message");
+                            System.out.println("0 - Delete Message");
+
+                            System.out.print("Choose option: ");
+
+                            int action = input.nextInt();
+                            input.nextLine();
+
+                            // Process action
+                            String result = message.sentMessage(action);
+
+                            System.out.println(result);
+
+                            // Display details
+                            if (action == 1 || action == 2) {
+
+                                System.out.println("\n===== MESSAGE DETAILS =====");
+
+                                System.out.println(message.printMessages());
+                            }
+                        }
+
+                        // Display total messages
+                        System.out.println("\nTotal Messages Sent: " + Message.returnTotalMessages());
+                    }
+
+                    // SHOW MESSAGES
+                    else if (option == 2) {
+
+                        System.out.println("Coming Soon.");
+                    }
+
+                    // QUIT
+                    else if (option == 3) {
+
+                        System.out.println("Goodbye.");
+
+                        running = false;
+                    }
+
+                    // INVALID OPTION
+                    else {
+
+                        System.out.println("Invalid option.");
+                    }
+                }
+            }
+        }
+
+        input.close();
     }
 }
